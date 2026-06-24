@@ -30,6 +30,7 @@ const els = {
   previewInfo: document.querySelector("#previewInfo"),
   downloadButton: document.querySelector("#downloadButton"),
   coordinateToggle: document.querySelector("#coordinateToggle"),
+  clearAllButton: document.querySelector("#clearAllButton"),
 };
 
 const favoriteKey = "pokemonsleep-img-merge-layouts";
@@ -70,6 +71,7 @@ function init() {
   els.colsInput.addEventListener("input", () => setGridValue("cols", els.colsInput.value));
   els.sampleButton.addEventListener("click", loadSamples);
   els.downloadButton.addEventListener("click", downloadMergedImage);
+  els.clearAllButton.addEventListener("click", clearAllImages);
   els.coordinateToggle.addEventListener("click", toggleCoordinates);
   els.previewCanvas.addEventListener("click", selectSlotFromPreview);
   document.querySelectorAll("[data-collapse-toggle]").forEach((button) => {
@@ -220,7 +222,9 @@ function render() {
   syncInputs();
   renderImageList();
   renderPreview();
-  els.downloadButton.disabled = getFilledImages().length === 0;
+  const hasImages = getFilledImages().length > 0;
+  els.downloadButton.disabled = !hasImages;
+  els.clearAllButton.disabled = !hasImages;
 }
 
 function renderImageList() {
@@ -578,6 +582,14 @@ function clearFavorite(index) {
   setStatus(`お気に入り${index + 1}を削除しました。`);
 }
 
+function clearAllImages() {
+  clearImages();
+  state.rows = 2;
+  state.cols = 4;
+  state.selectedSlotIndex = null;
+  setStatus("すべての画像を削除しました。");
+  render();
+}
 function clearImages() {
   getFilledImages().forEach((item) => URL.revokeObjectURL(item.url));
   state.images = [];
@@ -586,6 +598,8 @@ function clearImages() {
 function setStatus(message) {
   els.statusText.textContent = message;
 }
+
+
 
 
 
