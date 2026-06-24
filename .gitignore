@@ -1,0 +1,11 @@
+.env
+.env.local
+node_modules/
+.DS_Store
+*.log
+tmp/
+temp/
+dist/
+build/
+README.local.md
+/*.png

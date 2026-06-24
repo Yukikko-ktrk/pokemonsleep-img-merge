@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ポケスリ画像結合</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <h1>ポケスリ画像結合</h1>
+          <p>画像はブラウザ内だけで処理します。</p>
+        </div>
+        <button id="downloadButton" class="primary-button" type="button" disabled>PNG保存</button>
+      </header>
+
+      <section class="workspace">
+        <div class="control-panel">
+          <section class="panel-section collapsible-section" data-collapsible="images">
+            <button class="section-toggle" type="button" data-collapse-toggle="images" aria-expanded="true">画像</button>
+            <div class="section-body">
+              <label class="drop-zone" id="dropZone">
+                <input id="fileInput" type="file" accept="image/*" multiple>
+                <span>画像を選択</span>
+                <small>またはここにドロップ</small>
+              </label>
+              <button id="sampleButton" class="secondary-button" type="button">サンプル読込</button>
+              <p id="statusText" class="status-text">画像を追加してください。</p>
+            </div>
+          </section>
+
+          <section class="panel-section collapsible-section" data-collapsible="layout">
+            <button class="section-toggle" type="button" data-collapse-toggle="layout" aria-expanded="true">レイアウト</button>
+            <div class="section-body">
+              <div class="stepper-row">
+                <span>行</span>
+                <button class="icon-button" type="button" data-step-target="rows" data-step="-1" aria-label="行を減らす">←</button>
+                <input id="rowsInput" class="number-input" type="number" min="1" max="12" value="2" inputmode="numeric">
+                <button class="icon-button" type="button" data-step-target="rows" data-step="1" aria-label="行を増やす">→</button>
+              </div>
+              <div class="stepper-row">
+                <span>列</span>
+                <button class="icon-button" type="button" data-step-target="cols" data-step="-1" aria-label="列を減らす">←</button>
+                <input id="colsInput" class="number-input" type="number" min="1" max="12" value="4" inputmode="numeric">
+                <button class="icon-button" type="button" data-step-target="cols" data-step="1" aria-label="列を増やす">→</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section collapsible-section is-collapsed" data-collapsible="favorites">
+            <button class="section-toggle" type="button" data-collapse-toggle="favorites" aria-expanded="false">お気に入り</button>
+            <div class="section-body">
+              <div id="favoriteList" class="favorite-list"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>並べ替え</h2>
+            <div id="imageList" class="image-list empty-list">画像がありません。</div>
+          </section>
+        </div>
+
+        <section class="preview-panel">
+          <div class="preview-header">
+            <h2>プレビュー</h2>
+            <span id="previewInfo">-</span>
+            <button id="coordinateToggle" class="text-button coordinate-toggle" type="button" aria-pressed="false">座標表示: OFF</button>
+          </div>
+          <div class="preview-frame">
+            <canvas id="previewCanvas"></canvas>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
