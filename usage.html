@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>使い方 | ポケスリ画像結合</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell usage-shell">
+      <header class="app-header usage-header">
+        <div>
+          <h1>使い方</h1>
+          <p>ポケスリ画像結合の基本操作</p>
+        </div>
+        <a class="primary-button header-link header-button" href="./index.html">アプリへ戻る</a>
+      </header>
+
+      <section class="usage-page">
+        <section class="usage-section">
+          <h2>1. 画像を追加する</h2>
+          <p>`画像を選択` から画像を選ぶか、画像ファイルを枠内へドラッグ＆ドロップします。複数枚をまとめて追加できます。</p>
+          <p>`サンプル読込` を押すと、動作確認用の画像を読み込めます。</p>
+        </section>
+
+        <section class="usage-section">
+          <h2>2. レイアウトを決める</h2>
+          <p>画像を読み込むと、枚数に合わせて行・列が自動設定されます。あとから `行` と `列` の左右ボタンや数値入力で手動変更できます。</p>
+          <ul>
+            <li>5枚までは `1行 n列`</li>
+            <li>6枚は `2行 3列`</li>
+            <li>8枚までは `2行 4列`</li>
+            <li>12枚までは `3行 4列`</li>
+          </ul>
+        </section>
+
+        <section class="usage-section">
+          <h2>3. 画像を並べ替える</h2>
+          <p>並べ替えパネルの各画像にある `↑ ↓ ← →` ボタンで位置を入れ替えます。削除した場所は空きマスとして残り、出力時は白背景になります。</p>
+          <p>プレビュー上の画像や空きマスをクリックまたはタップすると、対応する並べ替え行が強調表示されます。</p>
+        </section>
+
+        <section class="usage-section">
+          <h2>4. 座標を確認する</h2>
+          <p>プレビュー上部の `座標表示` をONにすると、各画像の中央に `(行, 列)` が表示されます。保存するPNGには、この座標ラベルは入りません。</p>
+        </section>
+
+        <section class="usage-section">
+          <h2>5. お気に入りを使う</h2>
+          <p>よく使う行・列の組み合わせは、お気に入りに3つまで保存できます。保存内容は同じブラウザに残ります。</p>
+        </section>
+
+        <section class="usage-section">
+          <h2>6. PNGで保存する</h2>
+          <p>`PNG保存` を押すと、結合画像を保存します。読み込んだ画像は元解像度のまま結合されます。</p>
+          <p>保存ファイル名は `pokemonsleep-img-merge-YYYYMMDD-HHMMSS.png` です。</p>
+        </section>
+
+        <section class="usage-section">
+          <h2>補足</h2>
+          <ul>
+            <li>画像処理はブラウザ内だけで行います。</li>
+            <li>画像データ本体はブラウザ保存領域に保存しません。</li>
+            <li>`一括削除` を押すと画像をすべて削除し、行列は初期値に戻ります。</li>
+          </ul>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
+
