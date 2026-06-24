@@ -293,6 +293,12 @@ button:disabled {
   background: #fbfcfd;
 }
 
+
+.image-item.is-selected {
+  border-color: var(--accent);
+  background: #e8f5f1;
+  box-shadow: 0 0 0 2px rgba(22, 122, 104, 0.18);
+}
 .image-thumb {
   width: 64px;
   height: 64px;
@@ -374,10 +380,12 @@ button:disabled {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
+  cursor: crosshair;
 }
 
 #previewCanvas.is-empty {
   min-height: 280px;
+  cursor: default;
 }
 
 @media (max-width: 900px) {
@@ -458,6 +466,8 @@ button:disabled {
     width: 100%;
   }
 }
+
+
 
 
 

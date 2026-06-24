@@ -14,6 +14,7 @@ const state = {
   cols: 4,
   images: [],
   showCoordinates: false,
+  selectedSlotIndex: null,
 };
 
 const els = {
@@ -70,6 +71,7 @@ function init() {
   els.sampleButton.addEventListener("click", loadSamples);
   els.downloadButton.addEventListener("click", downloadMergedImage);
   els.coordinateToggle.addEventListener("click", toggleCoordinates);
+  els.previewCanvas.addEventListener("click", selectSlotFromPreview);
   document.querySelectorAll("[data-collapse-toggle]").forEach((button) => {
     button.addEventListener("click", () => toggleSection(button));
   });
@@ -205,6 +207,8 @@ function renderImageList() {
     const colIndex = (index % state.cols) + 1;
     const row = document.createElement("article");
     row.className = "image-item";
+    row.dataset.slotIndex = String(index);
+    row.classList.toggle("is-selected", state.selectedSlotIndex === index);
 
     const thumb = item ? document.createElement("img") : document.createElement("div");
     thumb.className = item ? "image-thumb" : "image-thumb empty-thumb";
@@ -308,6 +312,30 @@ function renderPreview() {
   els.previewInfo.textContent = `${metrics.width} x ${metrics.height}px`;
 }
 
+function selectSlotFromPreview(event) {
+  const metrics = getCanvasMetrics();
+  if (!metrics) {
+    return;
+  }
+  const rect = els.previewCanvas.getBoundingClientRect();
+  const scaleX = metrics.width / rect.width;
+  const scaleY = metrics.height / rect.height;
+  const canvasX = (event.clientX - rect.left) * scaleX;
+  const canvasY = (event.clientY - rect.top) * scaleY;
+  const col = Math.floor(canvasX / metrics.cellWidth);
+  const row = Math.floor(canvasY / metrics.cellHeight);
+  if (col < 0 || col >= metrics.cols || row < 0 || row >= metrics.rows) {
+    return;
+  }
+  const index = row * metrics.cols + col;
+  if (index >= getSlotCount()) {
+    return;
+  }
+  state.selectedSlotIndex = index;
+  renderImageList();
+  scrollSelectedImageIntoView();
+  setStatus(`(${row + 1}, ${col + 1}) を選択しました。`);
+}
 function getCanvasMetrics() {
   const filledImages = getFilledImages();
   if (!filledImages.length) {
@@ -349,6 +377,16 @@ function drawMergedCanvas(canvas, metrics, options = {}) {
       drawCoordinateLabel(context, col + 1, row + 1, col * metrics.cellWidth, row * metrics.cellHeight, metrics.cellWidth, metrics.cellHeight);
     }
   });
+}
+
+function scrollSelectedImageIntoView() {
+  if (state.selectedSlotIndex === null) {
+    return;
+  }
+  const target = els.imageList.querySelector(`[data-slot-index="${state.selectedSlotIndex}"]`);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 }
 
 function drawCoordinateLabel(context, col, row, x, y, width, height) {
@@ -516,6 +554,8 @@ function clearImages() {
 function setStatus(message) {
   els.statusText.textContent = message;
 }
+
+
 
 
 
