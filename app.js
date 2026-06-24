@@ -33,7 +33,7 @@ const els = {
 };
 
 const favoriteKey = "pokemonsleep-img-merge-layouts";
-const maxGridValue = 12;
+const maxGridValue = 99;
 
 init();
 
@@ -98,8 +98,9 @@ async function handleFiles(fileList) {
     }
   }
 
-  state.images.push(...loaded);
-  setStatus(`${state.images.length}枚の画像を読み込みました。`);
+  addImagesToSlots(loaded);
+  applyAutoGrid(getFilledImages().length);
+  setStatus(`${getFilledImages().length}枚の画像を読み込みました。`);
   render();
 }
 
@@ -119,6 +120,7 @@ async function loadSamples() {
     }
     clearImages();
     addImagesToSlots(sampleImages);
+    applyAutoGrid(getFilledImages().length);
     setStatus("サンプル8枚を読み込みました。");
     render();
   } catch {
@@ -160,6 +162,36 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getAutoGrid(imageCount) {
+  const count = Math.max(1, imageCount);
+  if (count <= 5) {
+    return { rows: 1, cols: count };
+  }
+  if (count === 6) {
+    return { rows: 2, cols: 3 };
+  }
+  if (count <= 8) {
+    return { rows: 2, cols: 4 };
+  }
+  if (count <= 12) {
+    return { rows: 3, cols: 4 };
+  }
+
+  let rows = 4;
+  while (rows * (rows + 1) < count) {
+    rows += 1;
+  }
+  return { rows, cols: rows + 1 };
+}
+
+function applyAutoGrid(imageCount) {
+  if (imageCount <= 0) {
+    return;
+  }
+  const grid = getAutoGrid(imageCount);
+  state.rows = clamp(grid.rows, 1, maxGridValue);
+  state.cols = clamp(grid.cols, 1, maxGridValue);
+}
 function syncInputs() {
   els.rowsInput.value = state.rows;
   els.colsInput.value = state.cols;
@@ -554,6 +586,9 @@ function clearImages() {
 function setStatus(message) {
   els.statusText.textContent = message;
 }
+
+
+
 
 
 
