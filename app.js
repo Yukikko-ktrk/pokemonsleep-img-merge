@@ -28,6 +28,7 @@ const els = {
   imageList: document.querySelector("#imageList"),
   previewCanvas: document.querySelector("#previewCanvas"),
   previewInfo: document.querySelector("#previewInfo"),
+  shareButton: document.querySelector("#shareButton"),
   downloadButton: document.querySelector("#downloadButton"),
   coordinateToggle: document.querySelector("#coordinateToggle"),
   clearAllButton: document.querySelector("#clearAllButton"),
@@ -70,6 +71,7 @@ function init() {
   els.rowsInput.addEventListener("input", () => setGridValue("rows", els.rowsInput.value));
   els.colsInput.addEventListener("input", () => setGridValue("cols", els.colsInput.value));
   els.sampleButton.addEventListener("click", loadSamples);
+  els.shareButton.addEventListener("click", shareMergedImage);
   els.downloadButton.addEventListener("click", downloadMergedImage);
   els.clearAllButton.addEventListener("click", clearAllImages);
   els.coordinateToggle.addEventListener("click", toggleCoordinates);
@@ -223,6 +225,7 @@ function render() {
   renderImageList();
   renderPreview();
   const hasImages = getFilledImages().length > 0;
+  els.shareButton.disabled = !hasImages;
   els.downloadButton.disabled = !hasImages;
   els.clearAllButton.disabled = !hasImages;
 }
@@ -468,14 +471,7 @@ function toggleSection(button) {
   button.setAttribute("aria-expanded", String(!collapsed));
 }
 function downloadMergedImage() {
-  const metrics = getCanvasMetrics();
-  if (!metrics) {
-    return;
-  }
-
-  const canvas = document.createElement("canvas");
-  drawMergedCanvas(canvas, metrics);
-  canvas.toBlob((blob) => {
+  createMergedPngBlob((blob, filename) => {
     if (!blob) {
       setStatus("PNGを作成できませんでした。");
       return;
@@ -484,13 +480,52 @@ function downloadMergedImage() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.href = url;
-    link.download = `pokemonsleep-img-merge-${formatTimestamp(new Date())}.png`;
+    link.download = filename;
     link.click();
     URL.revokeObjectURL(url);
     setStatus("PNGを保存しました。");
-  }, "image/png");
+  });
 }
 
+function shareMergedImage() {
+  createMergedPngBlob(async (blob, filename) => {
+    if (!blob) {
+      setStatus("PNGを作成できませんでした。");
+      return;
+    }
+
+    const file = new File([blob], filename, { type: "image/png" });
+    if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [file] })) {
+      setStatus("このブラウザでは写真への共有に対応していません。PNG保存を使ってください。");
+      return;
+    }
+
+    try {
+      await navigator.share({
+        files: [file],
+        title: "ポケスリ画像結合",
+      });
+      setStatus("共有シートを開きました。写真に保存を選んでください。");
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setStatus("共有できませんでした。PNG保存を使ってください。");
+      }
+    }
+  });
+}
+
+function createMergedPngBlob(callback) {
+  const metrics = getCanvasMetrics();
+  if (!metrics) {
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  drawMergedCanvas(canvas, metrics);
+  canvas.toBlob((blob) => {
+    callback(blob, `pokemonsleep-img-merge-${formatTimestamp(new Date())}.png`);
+  }, "image/png");
+}
 function formatTimestamp(date) {
   const pad = (value) => String(value).padStart(2, "0");
   return [
@@ -598,21 +633,4 @@ function clearImages() {
 function setStatus(message) {
   els.statusText.textContent = message;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
